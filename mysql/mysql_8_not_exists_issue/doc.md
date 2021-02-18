@@ -2,7 +2,7 @@
 
 
 
-#### 问题描述
+### 问题描述
 
 ```sql
 SELECT
@@ -24,7 +24,7 @@ WHERE
 )
 ```
 
-![image-20210218192254202](D:\work\www\coding-exp\mysql\mysql_8_not_exists_issue\image-1.png)
+![image-20210218192254202](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_8_not_exists_issue/image-1.png)
 
 
 
@@ -50,15 +50,15 @@ WHERE
 ) and d.id='445e77c0-0257-1d82-cfed-5cea8e07fcb5'  //该id是符合条件的61条中的其中一条的id
 ```
 
-![image-20210218192534760](D:\work\www\coding-exp\mysql\mysql_8_not_exists_issue\image-2.png)
+![image-20210218192534760](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_8_not_exists_issue/image-2.png)
 
 情况看起来非常诡异，居然有51条数据处于幽灵状态，看不到，却能指定的查询出来。
 
-[demo.sql](https://www.github.com)
+[demo.sql](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_8_not_exists_issue/demo.sql)
 
 
 
-#### 尝试分析
+### 尝试分析
 
 sql语句并没有使用mysql特有的语法和特性，都是sql标准语法。表现出的结果并不符合预期，初步判断是mysql8的bug。为了确定这个猜想，换成mysql5.7测试，结果能正常查询到61条数据。
 
@@ -76,7 +76,7 @@ sql语句并没有使用mysql特有的语法和特性，都是sql标准语法。
 
 
 
-#### 结论
+### 结论
 
 这是mysql8.0版本的bug，而且有一定的隐秘性。
 
