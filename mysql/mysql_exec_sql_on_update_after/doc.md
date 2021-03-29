@@ -20,7 +20,6 @@ A表执行update语句后，查看B表情况：
 update kb_book_data set book_name=book_name;
 select count(*) from kb_es_sync;
 ```
-<br>
 
 ![image-20210327160338274](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/show_problem.png)  
 <br>
@@ -29,10 +28,8 @@ select count(*) from kb_es_sync;
 <br>
 那么，如何实现update语句执行后仅在发生行数据更改时自动执行设定语句呢？  
 <br>
-<br>
 ### 解决方案
 共列出了3种方案，最终选择第3种。 
-<br>
 1. 修改A表的update语句，添加过滤条件：修改列的最终值非该列的当前值，但是这样程序就会变得复杂。  
 
 	修改update语句前：
@@ -56,20 +53,16 @@ select count(*) from kb_es_sync;
    + 数据表列变化时需要同步维护update after触发器； 
    + 数据表列数较多情况下，判断条件较长。 
      <br>
-     <br>
 3. 利用Mysql [TIMESTAMP 和 DATETIME 列可以自动初始化和更新到当前的日期和时间](:https://dev.mysql.com/doc/refman/8.0/en/timestamp-initialization.html)功能。 
    只有该行任何其它列的值从当前值改变成另外的值，自动更新的列才会自动更新到当前的时间戳。 
    我们可以在A表添加该列，update after触发器判断该列的值，有变化则执行语句。  
    <br>
-   <br>
 ### 具体步骤
-
 + A表添加自动初始化和自动更新列update_date； 
 
   ```sql
   ALTER TABLE `kb_book_data` ADD `update_date` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '禁止手动修改' AFTER `create_date`;
   ```
-  <br>
 + 修改update after触发器，添加判断条件：只有update_date列的值从当前值改变成另外的值，则执行定义语句；
 
   ```sql
@@ -85,9 +78,7 @@ select count(*) from kb_es_sync;
   $$
   DELIMITER ;
   ```
-  <br>
 + 程序禁止修改update_date的值。  
-  <br>
   <br>
 通过以上步骤的修改后的结果：  
 
