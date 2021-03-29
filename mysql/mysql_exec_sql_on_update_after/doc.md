@@ -7,7 +7,7 @@
 <br>
 以下例子数据表kb_book_data为A表，数据表kb_es_sync为B表。
 
-[init_table.sql](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/demo.sql)
+[init_table.sql](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/init_info.sql)
 <br>
 <br>
 A表、B表初始化情况：
