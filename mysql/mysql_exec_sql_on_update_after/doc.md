@@ -89,7 +89,7 @@ select count(*) from kb_es_sync;
   FOR EACH ROW 
   BEGIN 
     if old.update_date != new.update_date then 
-        insert into kb_es_sync(`data_type`, `op`, `data_key`) values('book_data', 'update', new.id); 
+        insert into kb_es_sync(`data_key`) values(new.id); 
     end if; 
   END
   $$
