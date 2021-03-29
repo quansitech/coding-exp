@@ -10,18 +10,14 @@
 [init_table.sql](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/demo.sql)
 <br>
 <br>
-<br>
 A表、B表初始化情况：
 <br>
 
 ![image-20210327160029377](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/init_info.png)  
 <br>
 A表执行update语句后，查看B表情况：
-<br>
-
 ```sql
 update kb_book_data set book_name=book_name;
-
 select count(*) from kb_es_sync;
 ```
 <br>
@@ -35,28 +31,26 @@ select count(*) from kb_es_sync;
 <br>
 <br>
 ### 解决方案
-<br>
 共列出了3种方案，最终选择第3种。 
 <br>
-1.修改A表的update语句，添加过滤条件：修改列的最终值非该列的当前值，但是这样程序就会变得复杂。  
-  修改update语句前：   
+1. 修改A表的update语句，添加过滤条件：修改列的最终值非该列的当前值，但是这样程序就会变得复杂。  
+
+	修改update语句前：
+  
     ```sql
     update kb_book_data set isbn=9787544809757 where id='000365f9-a2e3-b5ab-bc1e-3561e3ed52d9';
     select count(*) from kb_es_sync;
     ```
-    <br>
    
    ![image-20210327160948399](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/solution-1.png)
 
-    修改update语句后：   
+	修改update语句后：   
     ```sql
     update kb_book_data set isbn=9787544809757 where id='000365f9-a2e3-b5ab-bc1e-3561e3ed52d9' and isbn!=9787544809757; 
     select count(*) from kb_es_sync; 
     ```
-   <br>
    
    ![image-20210327161105793](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/solution-1-2.png) 
-   <br>
    <br>
 2. update after触发器添加语句执行条件：判断只要该行任何列的值从当前值改变成另外的值，则执行语句。  但是这个方法可行性也比较低，原因如下： 
    + 数据表列变化时需要同步维护update after触发器； 
@@ -69,14 +63,13 @@ select count(*) from kb_es_sync;
    <br>
    <br>
 ### 具体步骤
-<br>
+
 + A表添加自动初始化和自动更新列update_date； 
 
   ```sql
   ALTER TABLE `kb_book_data` ADD `update_date` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '禁止手动修改' AFTER `create_date`;
   ```
   <br>
-
 + 修改update after触发器，添加判断条件：只有update_date列的值从当前值改变成另外的值，则执行定义语句；
 
   ```sql
@@ -93,11 +86,9 @@ select count(*) from kb_es_sync;
   DELIMITER ;
   ```
   <br>
-
 + 程序禁止修改update_date的值。  
   <br>
   <br>
-
 通过以上步骤的修改后的结果：  
 
 ```sql
