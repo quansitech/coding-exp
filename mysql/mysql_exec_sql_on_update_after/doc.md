@@ -28,7 +28,7 @@ select count(*) from kb_es_sync;
 <br>
 那么，如何实现update语句执行后仅在发生行数据更改时自动执行设定语句呢？  
 <br>
-### 解决方案
+### 方案分析
 共列出了3种方案，最终选择第3种。 
 1. 修改A表的update语句，添加过滤条件：修改列的最终值非该列的当前值，但是这样程序就会变得复杂。  
 
@@ -53,11 +53,13 @@ select count(*) from kb_es_sync;
    + 数据表列变化时需要同步维护update after触发器； 
    + 数据表列数较多情况下，判断条件较长。 
      <br>
-3. 利用Mysql [TIMESTAMP 和 DATETIME 列可以自动初始化和更新到当前的日期和时间](:https://dev.mysql.com/doc/refman/8.0/en/timestamp-initialization.html)功能。 
+3. 利用Mysql [TIMESTAMP 和 DATETIME 列可以自动初始化和更新到当前的日期和时间](:https://dev.mysql.com/doc/refman/8.0/en/timestamp-initialization.html) 功能。  
+   
    只有该行任何其它列的值从当前值改变成另外的值，自动更新的列才会自动更新到当前的时间戳。 
+   
    我们可以在A表添加该列，update after触发器判断该列的值，有变化则执行语句。  
    <br>
-### 具体步骤
+### 解决方案
 + A表添加自动初始化和自动更新列update_date； 
 
   ```sql
