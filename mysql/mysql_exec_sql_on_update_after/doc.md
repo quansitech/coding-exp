@@ -34,27 +34,21 @@ select count(*) from kb_es_sync;
 那么，如何实现update语句执行后仅在发生行数据更改时自动执行设定语句呢？  
 <br>
 <br>
-<br>
-
 ### 解决方案
-
 <br>
 共列出了3种方案，最终选择第3种。 
 <br>
-<br>
-1. 修改A表的update语句，添加过滤条件：修改列的最终值非该列的当前值，但是这样程序就会变得复杂。 
-   修改update语句前：  
-    
+1.修改A表的update语句，添加过滤条件：修改列的最终值非该列的当前值，但是这样程序就会变得复杂。  
+  修改update语句前：   
     ```sql
-   update kb_book_data set isbn=9787544809757 where id='000365f9-a2e3-b5ab-bc1e-3561e3ed52d9';
-      select count(*) from kb_es_sync;
+    update kb_book_data set isbn=9787544809757 where id='000365f9-a2e3-b5ab-bc1e-3561e3ed52d9';
+    select count(*) from kb_es_sync;
     ```
     <br>
    
    ![image-20210327160948399](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/solution-1.png)
-   
-   修改update语句后：
-    
+
+    修改update语句后：   
     ```sql
     update kb_book_data set isbn=9787544809757 where id='000365f9-a2e3-b5ab-bc1e-3561e3ed52d9' and isbn!=9787544809757; 
     select count(*) from kb_es_sync; 
@@ -74,8 +68,6 @@ select count(*) from kb_es_sync;
    我们可以在A表添加该列，update after触发器判断该列的值，有变化则执行语句。  
    <br>
    <br>
-   <br>
-
 ### 具体步骤
 <br>
 + A表添加自动初始化和自动更新列update_date； 
