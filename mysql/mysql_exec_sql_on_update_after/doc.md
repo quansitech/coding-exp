@@ -79,7 +79,8 @@ select count(*) from kb_es_sync;
   DELIMITER ;
   ```
 + 程序禁止修改update_date的值。  
-  <br>
+
+
 通过以上步骤的修改后的结果：  
 
 ```sql
