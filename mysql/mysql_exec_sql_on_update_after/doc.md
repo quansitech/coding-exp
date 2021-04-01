@@ -7,13 +7,13 @@
 <br>
 以下例子数据表kb_book_data为A表，数据表kb_es_sync为B表。
 
-[init_table.sql](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/init_table.sql)
+[init_table.sql](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/init_table.sql)
 <br>
 <br>
 A表、B表初始化情况：
 <br>
 
-![image-20210327160029377](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/init_info.png)  
+![image-20210327160029377](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/init_info.png)  
 <br>
 A表执行update语句后，查看B表情况：
 ```sql
@@ -21,7 +21,7 @@ update kb_book_data set book_name=book_name;
 select count(*) from kb_es_sync;
 ```
 
-![image-20210327160338274](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/show_problem.png)  
+![image-20210327160338274](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/show_problem.png)  
 <br>
 实际使用发现，不管A表数据是否有变化，只要执行了update语句，B表就会插入一条记录，出现了B表的数据并不能准确表示A表发生数据变化的问题。
 <br>
@@ -39,7 +39,7 @@ select count(*) from kb_es_sync;
     select count(*) from kb_es_sync;
     ```
    
-   ![image-20210327160948399](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/solution-1.png)
+   ![image-20210327160948399](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/solution-1.png)
 
 	修改update语句后：   
     ```sql
@@ -47,7 +47,7 @@ select count(*) from kb_es_sync;
     select count(*) from kb_es_sync; 
     ```
    
-   ![image-20210327161105793](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/solution-1-2.png) 
+   ![image-20210327161105793](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/solution-1-2.png) 
    <br>
 2. update after触发器添加语句执行条件：判断只要该行任何列的值从当前值改变成另外的值，则执行语句。  但是这个方法可行性也比较低，原因如下： 
    + 数据表列变化时需要同步维护update after触发器； 
@@ -88,4 +88,4 @@ update kb_book_data set book_name=book_name;
 select count(*) from kb_es_sync;
 ```
 
-![image-20210327162057541](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/normal.png)  
+![image-20210327162057541](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/normal.png)  
