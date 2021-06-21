@@ -77,16 +77,18 @@ desc SELECT * FROM xh_test.test where name = 12222222222222222222222221;
 
 - 隐式类型转换有可能导致无法使用字段索引、查询结果不准确等问题；
 
-- 使用DDL时，应避免产生隐式转换
+- 应避免产生隐式转换
 
-  - 当两个操作数字段类型、字符集类型不一致时，可以使用类型转换函数cast、convert来明确的进行转换：
+  - 使用DDL时，表结构应设置字符集类型、校对规则，字符串字段应设置字符集类型；
 
+  - 使用DML时，当两个操作数字段类型、字符集类型不一致时，可以使用类型转换函数cast、convert来明确的进行转换：
+  
     - ```sql
       SELECT * FROM xh_test.test where name = cast(12222222222222222222222221 as char);
       desc SELECT * FROM xh_test.test where name = cast(12222222222222222222222221 as char);
       ```
 
     ![type_convert](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/type_convert.png)
-
+  
     ![desc_type_convert](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/desc_type_convert.png)
 
