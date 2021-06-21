@@ -74,13 +74,19 @@ desc SELECT * FROM xh_test.test where name = 12222222222222222222222221;
 ### 总结
 
 - [产生隐式转换的类型主要有：字段类型不一致、in参数包含多个类型、字符集类型或校对规则不一致等；](https://mp.weixin.qq.com/s?__biz=MzI4NjExMDA4NQ==&mid=2648450774&idx=1&sn=efb63a4c5a0396872acb3892a9cd85d8&scene=21#wechat_redirect)
+
 - 隐式类型转换有可能导致无法使用字段索引、查询结果不准确等问题；
-- 避免产生隐式转换，如当两个操作数类型不一致时，可以使用类型转换函数cast、convert来明确的进行转换：
-```sql
-SELECT * FROM xh_test.test where name = cast(12222222222222222222222221 as char);
-desc SELECT * FROM xh_test.test where name = cast(12222222222222222222222221 as char);
-```
 
-![type_convert](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/type_convert.png)
+- 使用DDL时，应避免产生隐式转换
 
-![desc_type_convert](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/desc_type_convert.png)
+  - 当两个操作数字段类型、字符集类型不一致时，可以使用类型转换函数cast、convert来明确的进行转换：
+
+    - ```sql
+      SELECT * FROM xh_test.test where name = cast(12222222222222222222222221 as char);
+      desc SELECT * FROM xh_test.test where name = cast(12222222222222222222222221 as char);
+      ```
+
+    ![type_convert](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/type_convert.png)
+
+    ![desc_type_convert](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/desc_type_convert.png)
+
