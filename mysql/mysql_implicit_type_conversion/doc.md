@@ -32,7 +32,7 @@ INSERT INTO `test` VALUES
 (9,'name9',12222229);
 ```
 
-![init_data](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/init_data.png)
+![init_data](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/init_data.png)
 
 执行查询sql
 
@@ -41,7 +41,7 @@ select * from test where id = '01aa';
 ```
 **问题一：查询的结果数据不准**
 
-![str_to_int](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/str_to_int.png)
+![str_to_int](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/str_to_int.png)
 
 执行查询sql
 
@@ -51,9 +51,9 @@ desc SELECT * FROM xh_test.test where name = 12222222222222222222222221;
 ```
 **问题二：不能利用索引 idx_name 且查询的结果数据不准**
 
-![int_to_str](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/int_to_str.png)
+![int_to_str](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/int_to_str.png)
 
-![desc_sql](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/desc_sql.png)
+![desc_sql](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/desc_sql.png)
 
 
 ### 什么是隐式转换
@@ -76,6 +76,6 @@ SELECT * FROM xh_test.test where name = cast(12222222222222222222222221 as char)
 desc SELECT * FROM xh_test.test where name = cast(12222222222222222222222221 as char);
 ```
 
-![type_convert](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/type_convert.png)
+![type_convert](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/type_convert.png)
 
-![desc_type_convert](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/desc_type_convert.png)
+![desc_type_convert](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/desc_type_convert.png)
