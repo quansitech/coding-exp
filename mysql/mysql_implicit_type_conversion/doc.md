@@ -48,8 +48,8 @@ select * from test where id = '01aa';
 执行查询sql
 
 ```sql
-SELECT * FROM xh_test.test where name = 12222222222222222222222221;
-desc SELECT * FROM xh_test.test where name = 12222222222222222222222221;
+SELECT * FROM test where name = 12222222222222222222222221;
+desc SELECT * FROM test where name = 12222222222222222222222221;
 ```
 **问题二：不能利用索引 idx_name 且查询的结果数据不准**
 
@@ -84,8 +84,8 @@ desc SELECT * FROM xh_test.test where name = 12222222222222222222222221;
   - 当两个操作数字段类型、字符集类型不一致时，可以使用类型转换函数cast、convert来明确的进行转换：
   
     - ```sql
-      SELECT * FROM xh_test.test where name = cast(12222222222222222222222221 as char);
-      desc SELECT * FROM xh_test.test where name = cast(12222222222222222222222221 as char);
+      SELECT * FROM test where name = cast(12222222222222222222222221 as char);
+      desc SELECT * FROM test where name = cast(12222222222222222222222221 as char);
       ```
 
     ![type_convert](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/type_convert.png)
