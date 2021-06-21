@@ -34,6 +34,7 @@ INSERT INTO `test` VALUES
 
 ![init_data](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/init_data.png)
 
+
 执行查询sql
 
 ```sql
@@ -42,6 +43,7 @@ select * from test where id = '01aa';
 **问题一：查询的结果数据不准**
 
 ![str_to_int](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/str_to_int.png)
+
 
 执行查询sql
 
@@ -56,6 +58,7 @@ desc SELECT * FROM xh_test.test where name = 12222222222222222222222221;
 ![desc_sql](https://github.com/xhiny/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/desc_sql.png)
 
 
+
 ### 什么是隐式转换
 
 ```blade
@@ -65,6 +68,8 @@ desc SELECT * FROM xh_test.test where name = 12222222222222222222222221;
 ```
 
 具体的隐式转换规则可参考[MySQL文档](https://dev.mysql.com/doc/refman/8.0/en/type-conversion.html)详细了解。
+
+
 
 ### 总结
 
