@@ -1,4 +1,4 @@
-## 使用certbot申请、续期通配符域名SSL证书
+## 使用certbot申请、续期泛域名SSL证书
 
 ```blade
 使用certbot申请通配符域名SSL证书，需要使用dns-01的域验证方式。
