@@ -7,3 +7,10 @@
 
 ## SSL证书
 + [使用certbot申请、续期泛域名SSL证书](https://github.com/quansitech/coding-exp/blob/main/ssl_certificate/obtain_wildcard_certificate_from_letsencrypt/doc.md)
+
+## PHP
+
++ [记一次PHP Segment fault的调试](https://github.com/quansitech/coding-exp/blob/main/php/gdb_segfault.md)
+
+
+
