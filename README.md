@@ -7,10 +7,10 @@
 
 ## SSL证书
 + [使用certbot申请、续期泛域名SSL证书](https://github.com/quansitech/coding-exp/blob/main/ssl_certificate/obtain_wildcard_certificate_from_letsencrypt/doc.md)
++ [curl error 60的处理](https://github.com/quansitech/coding-exp/blob/main/ssl_certificate/curl_error_60/doc.md)
 
 ## PHP
 
 + [记一次PHP Segment fault的调试](https://github.com/quansitech/coding-exp/blob/main/php/gdb_segfault.md)
 + [array_map和foreach性能对比](https://github.com/quansitech/coding-exp/blob/main/php/array_map_with_foreach.md)
-
 
