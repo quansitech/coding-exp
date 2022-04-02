@@ -18,3 +18,8 @@
 ## docker
 
 + [阿里云镜像构建使用dpkg安装报错处理方法](https://github.com/quansitech/coding-exp/blob/main/docker/dkp_exp.md)
+
+## linux
+
++ [离线安装软件包](https://github.com/quansitech/coding-exp/blob/main/linux/offline_install.md)
++ [rsync实现跨服务器文件同步](https://github.com/quansitech/coding-exp/blob/main/linux/rsync_remote.md)
