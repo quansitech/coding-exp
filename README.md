@@ -14,6 +14,7 @@
 
 + [记一次PHP Segment fault的调试](https://github.com/quansitech/coding-exp/blob/main/php/gdb_segfault.md)
 + [array_map和foreach性能对比](https://github.com/quansitech/coding-exp/blob/main/php/array_map_with_foreach.md)
++ [已过期session文件堆积至服务器容量和inode满](https://github.com/quansitech/coding-exp/blob/main/php/server_without_space_and_inode_with_to_much_invalid_php_sessions.md)
 
 ## docker
 
