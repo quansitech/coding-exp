@@ -1,12 +1,12 @@
 ## 使用certbot申请、续期泛域名SSL证书
 
 ```blade
-使用certbot申请通配符域名SSL证书，需要使用dns-01的域验证方式。
+使用certbot申请泛域名SSL证书，需要使用dns-01的域验证方式。
 certbot暂无支持国内DNS服务商插件，此方案是使用manual模式指定动态修改DNS记录脚本完成SSL证书的申请、续期功能。
 
 以域名为*.t4tstudio.com，DNS服务供应方为阿里云，使用php运行修改DNS记录脚本为例。
 
-只申请通配符域名*.t4tstudio.com的话，主域名t4tstudio.com会失效，所以申请时两个域名需要加上。
+只申请泛域名*.t4tstudio.com的话，主域名t4tstudio.com会失效，所以申请时两个域名需要加上。
 ```
 
 
