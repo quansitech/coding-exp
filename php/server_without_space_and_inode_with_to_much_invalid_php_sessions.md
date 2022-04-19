@@ -1,37 +1,23 @@
-### 已过期session文件堆积至服务器容量和inode满
-
-
-
-#### Linux分区容量满
-
-线上一个项目前台能正常访问，但是后台登录后会跳转至登录页面而无法登录。
-
-
-
+### 已过期session文件堆积至服务器容量和inode满   
+  
+#### Linux分区容量满   
+线上一个项目前台能正常访问，但是后台登录后会跳转至登录页面而无法登录。  
 登上服务器查看项目log文件没异常，倒是使用tab时，服务器出现空间不足的提示：
 
 ```bash
 No space left on device
 ```
 
-使用df -h命令查看，原来分区容量满了。
+使用df -h命令查看，原来分区容量满了。  
+删除了一些临时文件后，项目后台可以登录了。  
+过了一段时间该项目问题又出现了。  
 
-删除了一些临时文件后，项目后台可以登录了。
-
-过了一段时间该项目问题又出现了。
-
-
-
-#### 硬盘空间未满仍提示空间不足
-
-登录服务器查看系统分区容量，不至于不够空间，但还是有空间不足的提示。
-
-
-
-那就清空了一些占用比较大的log。
-
-推荐使用>指令覆盖文件原内容来清空文件。
-
+#### 硬盘空间未满仍提示空间不足  
+登录服务器查看系统分区容量，不至于不够空间，但还是有空间不足的提示。  
+  
+  
+那就清空了一些占用比较大的log。  
+推荐使用>指令覆盖文件原内容来清空文件。  
 ```bash
 cat /dev/null > filename
 ```
@@ -44,31 +30,23 @@ cat /dev/null > filename
 rm file && touch file
 ```
 
-rm后，文件空间可能不会马上被释放，文件过大还会使CPU占满。
-
-
-
-释放了约4G硬盘容量，并没有解决问题，而且重启lnmp服务失败。
-
-
+rm后，文件空间可能不会马上被释放，文件过大还会使CPU占满。  
+释放了约4G硬盘容量，并没有解决问题，而且重启lnmp服务失败。  
+  
 
 #### Linux inode容量满
 
-[由于每个文件都必须有一个inode，因此有可能发生inode已经用光，但是硬盘还未存满的情况。这时，就无法在硬盘上创建新文件。](https://www.ruanyifeng.com/blog/2011/12/inode.html)
+[由于每个文件都必须有一个inode，因此有可能发生inode已经用光，但是硬盘还未存满的情况。这时，就无法在硬盘上创建新文件。](https://www.ruanyifeng.com/blog/2011/12/inode.html)  
 
-
-
-使用df -i命令发现根目录的inode满了，所以Linux不能创建临时文件，也解释了为什么释放了硬盘空间仍然报空间不足的问题。
+使用df -i命令发现根目录的inode满了，所以Linux不能创建临时文件，也解释了为什么释放了硬盘空间仍然报空间不足的问题。  
 
 
 
 #### 查找占用文件夹
 
-[Linux实例磁盘空间满和inode满的问题排查方法](https://help.aliyun.com/document_detail/42531.html)
+[Linux实例磁盘空间满和inode满的问题排查方法](https://help.aliyun.com/document_detail/42531.html)  
 
-
-
-分析根目录下的每个二级目录文件数，逐级找出占用最大的目录。
+分析根目录下的每个二级目录文件数，逐级找出占用最大的目录。  
 
 ```bash
 for i in /*; do echo $i; find $i | wc -l; done
@@ -76,16 +54,12 @@ for i in /*; do echo $i; find $i | wc -l; done
 
 
 
-#### PHP sessions过期文件没有自动清理
-
-最后发现是/var/php/sessions目录。
-
-这是存放php的session文件，里面有两百多万个文件，也就是占用了两百多万个inode。
+#### PHP sessions过期文件没有自动清理  
+最后发现是/var/php/sessions目录。  
+这是存放php的session文件，里面有两百多万个文件，也就是占用了两百多万个inode。  
 
 
-
-正常会通过启动gc进程来自动清理过期的session，那为什么没有清理呢？
-
+正常会通过启动gc进程来自动清理过期的session，那为什么没有清理呢？  
 php.ini与session生命周期有关部分配置
 
 ```bash
@@ -114,12 +88,9 @@ session.gc_probability = 0
 # 此值为0，所以不会触发gc回收，也就无法自动清除过期的session文件
 ```
 
-将session.gc_probability改为1后，/var/php/sessions/最后变回了两百多个文件。
-
-
-
-至此项目终于可以正常访问了。
-
-当过期session文件无法自动清理，堆积至服务器分区容量满或者inode满。
-
+将session.gc_probability改为1后，/var/php/sessions/最后变回了两百多个文件。  
+  
+  
+至此项目终于可以正常访问了。  
+当过期session文件无法自动清理，堆积至服务器分区容量满或者inode满。  
 服务器无法创建新的文件，所以无法生成新的session信息，也就无法登录项目后台。
