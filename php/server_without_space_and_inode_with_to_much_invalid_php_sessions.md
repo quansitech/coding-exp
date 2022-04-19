@@ -24,7 +24,7 @@ cat /dev/null > filename
 
 
 
-**不建议直接使用rm命令清空大文件**
+*不建议直接使用rm命令清空大文件*
 
 ```bash
 rm file && touch file
