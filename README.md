@@ -16,6 +16,7 @@
 
 + [记一次PHP Segment fault的调试](https://github.com/quansitech/coding-exp/blob/main/php/gdb_segfault.md)
 + [array_map和foreach性能对比](https://github.com/quansitech/coding-exp/blob/main/php/array_map_with_foreach.md)
++ [指定composer包下载地址](https://github.com/quansitech/coding-exp/blob/main/php/hardcode_package_url.md)
 
 ## docker
 
