@@ -7,6 +7,8 @@
 + 先将binlog文件下载至本地，然后通过binlog解释出可阅读的日志文件，分析出事故发生前的时间点
   
   ```shell
+  //用mysql镜像，在shell命令行执行
+  
   mysqlbinlog --base64-output=decode-rows -v --database wd binlog.000002 > wd_05.sql
   ```
 
@@ -19,8 +21,6 @@
   binlog.000002 是文件路径，这里是相对路径。
   
   `> wd_05.sql` 将内容输出到该文件。
-  
-  
 
 + 分析输出的sql文件
   
@@ -39,9 +39,5 @@
   首先 | 后面跟mysql -u root -p 命令，是指将mysqlbinlog输出的数据流导向mysql，这样写意思就是让mysql恢复binlog导入的数据
   
   --stop-datetime 获取该时间点前的binlog数据，可以搭配--start-datetime来用
-
-
-
-
 
        
