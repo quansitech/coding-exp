@@ -6,6 +6,7 @@
 + [MySQL update语句执行后仅在发生行数据更改时自动执行设定语句](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_exec_sql_on_update_after/doc.md)
 + [MySQL隐式类型转换](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_implicit_type_conversion/doc.md)
 + [使用binlog恢复数据](https://github.com/quansitech/coding-exp/blob/main/mysql/binlog_recover/binlog_recover.md)
++ [MySQL主从复制经验总结](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_master_slave_replication/doc.md)
 
 ## SSL证书
 
