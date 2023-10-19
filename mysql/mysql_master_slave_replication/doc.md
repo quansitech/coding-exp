@@ -30,6 +30,11 @@ CREATE USER 'repl'@'从库IP地址' IDENTIFIED BY 'password';
 GRANT REPLICATION SLAVE ON *.* TO 'repl'@'从库IP地址';
 ```
 
+刷新权限
+```sql
+FLUSH PRIVILEGES;
+```
+
 准备开始将现有数据通过mysqldump的方式导入从库数据库，为了避免在备份时继续产生数据，可以先锁定主库
 ```sql
 FLUSH TABLES WITH READ LOCK;
