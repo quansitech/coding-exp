@@ -125,7 +125,7 @@
   | UPPER_BOUNDARY   | chunk上边界对应的索引值                                                                                |
 
 
-  **查看数据表 percona.checksums **
+  **查看数据表percona.checksums**
   ```bash
   SELECT * FROM percona.checksums WHERE tbl ='tbl2';
   
