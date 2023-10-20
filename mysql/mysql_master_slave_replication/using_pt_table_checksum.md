@@ -68,9 +68,6 @@
   | --ignore-databases       | string   | 否    | 指定需要忽略校验的数据库，如有多个则用','(逗号)隔开                          |
   | --ignore-databases-regex | string   | 否    | 指定采用正则表达式匹配忽略校验的数据库                          |
   | --explain                | string   | 否    | 显示校验查询语句，但不执行真正的校验操作                          |
-  | --replicate-check-only   | bool   | 否    | 查询之前保留的校验结果且有差异时才输出。该选项只适用于同时指定选项 --no-replicate-check                         |
-  | --no-replicate-check     | bool   | 否    | 在校验完每张表后检查主从当前表是否出现不一致                        |
-
 
 + 结果说明
   ```shell
@@ -105,25 +102,6 @@
   Lock wait timeout exceeded (--retries)
   Checksum query killed (--retries)
   ```
-  
-  **使用了 --replicate-check-only 输出如下**
-  ```shell
-  Checking if all tables can be checksummed ...
-  Starting checksum ...
-  Differences on fcee5856626f
-  TABLE CHUNK CNT_DIFF CRC_DIFF CHUNK_INDEX LOWER_BOUNDARY UPPER_BOUNDARY
-  db1.tbl2 1 1 1
-  ```
-  | 名称         | 说明                                                                                         |
-  |--------------------------------------------------------------------------------------------| ---- |
-  | TABLE        | 不同于主数据库的数据库和表。                                                                    |
-  | CHUNKS    | 与主表不同的表的区块号。                                                                          |
-  | CNT_DIFF    | 从库上chunk行数减去主库上chunk行数值                                                                              |
-  | CRC_DIFF     | 如果从库上对应的chunk与主库上不同，则为1，否则为0； |
-  | CHUNK_INDEX      | 表使用哪个索引用来进行chunk；                                                                                  |
-  | LOWER_BOUNDARY | chunk下边界对应的索引值；                                       |
-  | UPPER_BOUNDARY   | chunk上边界对应的索引值                                                                                |
-
 
   **查看数据表percona.checksums**
   ```bash
