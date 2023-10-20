@@ -10,6 +10,9 @@ mysql主从库正常运行，有一次项目迭代上线，执行了比较多的
 
 所以每次重启从库的同步功能，都会从迭代前的 POS 开始执行，这样会导致数据主键/字段重复等冲突。
 
+### 需要注意的事项
+- 请确保在执行任何数据修复操作之前，进行充分的备份。
+
 
 ### 解决方案
 
@@ -40,6 +43,17 @@ mysql主从库正常运行，有一次项目迭代上线，执行了比较多的
           常处理偶尔出现的错误，或者没有具体的错误号，如 存储过程已存在
           如果跳过的 event 在事务组内，则会跳过整个事务。
           ```
+          ```bash
+          # event 说明
+          # 执行sql
+          UPDATE `qs_menu` SET `title` = '系统设置111' WHERE `qs_menu`.`id` = 2;
+          
+          # 查看 binlog ，以上sql产生了4个 event， 则 set global sql_slave_skip_counter = [1-4] 均为跳过此修改
+          ```
+          ![binlog_sql_01](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_master_slave_replication/event-eg/binlog_sql_01.png)
+          ![binlog_events_01](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_master_slave_replication/event-eg/binlog_events_01.png)
+          ![skip_count_1](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_master_slave_replication/event-eg/skip_count_1.png)
+          ![skip_count_4](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_master_slave_replication/event-eg/skip_count_4.png)
           ```bash
           stop slave;
           set global sql_slave_skip_counter = 1;
@@ -93,6 +107,8 @@ mysql主从库正常运行，有一次项目迭代上线，执行了比较多的
       
       start slave;
       ```        
+
+**以上方案需要设置忽略参数或者重置主库POS时，有可能导致从库binlog不完整，请进行充分的备份**
 
 - 从库重做一遍
   ```tetx
