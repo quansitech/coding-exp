@@ -79,7 +79,10 @@
   10-20T08:36:50      0      1   603      3       7       0   0.035 db1.tbl2
   10-20T08:36:50      0      0    16      0       1       0   0.003 db2.tbl3
   10-20T08:36:50      0      0   600      0       6       0   0.024 db2.tbl4
-  ```      
+  ```
+  ```text
+  以上结果说明 db1.tbl2 的分块（CHUNKS） 7 的主从库总数与内容数据不一致。
+  ```  
   
   | 名称         | 说明                                                                                         |
   |--------------------------------------------------------------------------------------------| ---- |
@@ -103,7 +106,7 @@
   Checksum query killed (--retries)
   ```
   
-  使用了 --replicate-check-only 输出如下
+  **使用了 --replicate-check-only 输出如下**
   ```shell
   Checking if all tables can be checksummed ...
   Starting checksum ...
@@ -120,6 +123,24 @@
   | CHUNK_INDEX      | 表使用哪个索引用来进行chunk；                                                                                  |
   | LOWER_BOUNDARY | chunk下边界对应的索引值；                                       |
   | UPPER_BOUNDARY   | chunk上边界对应的索引值                                                                                |
+
+
+  **查看数据表 percona.checksums **
+  ```bash
+  SELECT * FROM percona.checksums WHERE tbl ='tbl2';
+  
+  +------+---------+-------+------------+-------------+----------------+----------------+----------+----------+------------+------------+---------------------+
+  | db   | tbl     | chunk | chunk_time | chunk_index | lower_boundary | upper_boundary | this_crc | this_cnt | master_crc | master_cnt | ts                  |
+  +------+---------+-------+------------+-------------+----------------+----------------+----------+----------+------------+------------+---------------------+
+  | db1 | tbl2 |     1 |   0.007131 | NULL        | NULL           | NULL           | d69f6249 |        4 | 8362121b   |          3 | 2023-10-20 10:23:37 |
+  +------+---------+-------+------------+-------------+----------------+----------------+----------+----------+------------+------------+---------------------+
+  1 row in set (0.00 sec)  
+  ```
+  ```text
+  以上查询结果说明 db1.tbl2 的分块（chunk） 1 的主从库数据不一致。
+  该分块在主库的行数（master_cnt）为 3 ，在从库的行数（this_cnt）为4；
+  该分块在主库的校验值（master_crc）为 8362121b ，在从库的校验值（this_crc）为 d69f6249 。
+  ```
 
 + 参考文档
   [Percona-Toolkit 之 pt-table-checksum 总结](https://www.cnblogs.com/dbabd/p/10653408.html)
