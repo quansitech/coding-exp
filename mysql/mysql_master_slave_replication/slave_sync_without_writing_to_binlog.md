@@ -37,7 +37,7 @@ mysql主从库正常运行，有一次项目迭代上线，执行了比较多的
           ```text
           跳过当前时间来自于主库的之后N个事件
           常处理偶尔出现的错误，或者没有具体的错误号，如 存储过程已存在
-          event 的定义
+          如果跳过的 event 在事务组内，则会跳过整个事务。
           ```
           ```bash
           stop slave;
@@ -90,6 +90,8 @@ mysql主从库正常运行，有一次项目迭代上线，执行了比较多的
       MASTER_PASSWORD='password',
       MASTER_LOG_FILE='mysql-bin.000016', #上面步骤记录的主库 binlog 文件
       MASTER_LOG_POS=537; #上面步骤记录的主库 binlog 文件位置
+      
+      start slave;
       ```        
 
 - 从库重做一遍
