@@ -69,7 +69,7 @@ mysql主从库正常运行，有一次项目迭代上线，执行了比较多的
           ```bash
           # 动态修改
           stop slave;
-          set global slave_exec_mode = 1;
+          set global slave_exec_mode = IDEMPOTENT;
           start slave;
           ```
           
