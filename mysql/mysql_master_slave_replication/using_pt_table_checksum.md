@@ -8,9 +8,9 @@
 
 ### 安装
 
-+ 使用Docker，运行pt-table-checksum容器：
++ 使用Docker，运行 percona-toolkit 服务：
    ```bash   
-   docker run -it percona/percona-toolkit
+   docker run -it perconalab/percona-toolkit
    ```
 
 ### 需要注意的事项
@@ -63,7 +63,7 @@
   | --user,-u                   | string | 是    | 主库用户                              |
   | --password,-p               | string | 否    | 主库密码，无 --ask-pass 时必填                              |
   | --ask-pass               | bool   | 否    | 连接主库提示密码                          |
-  | --database               | string   | 否    | 指定只需要校验的数据库，如有多个则用','(逗号)隔开。                          |
+  | --databases               | string   | 否    | 指定只需要校验的数据库，如有多个则用','(逗号)隔开。                          |
   | --ignore-databases       | string   | 否    | 指定需要忽略校验的数据库，如有多个则用','(逗号)隔开                          |
   | --ignore-databases-regex | string   | 否    | 指定采用正则表达式匹配忽略校验的数据库                          |
   | --explain                | string   | 否    | 显示校验查询语句，但不执行真正的校验操作                          |
