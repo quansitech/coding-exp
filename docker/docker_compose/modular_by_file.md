@@ -25,7 +25,7 @@
 
 ##### docker-compose.yml
 ```text
-通用配置、基础服务存放位置
+存放通用配置
 ```
 
 ```yaml
@@ -34,10 +34,6 @@ version: '3.8'
 networks:
   backend:
     driver: bridge
-
-services:
-  redis:
-    image: redis:latest 
 ```
 
 ##### 基础服务配置 (yml/common 目录)
@@ -48,8 +44,6 @@ services:
 ```yaml
 # 例如要管理多个 mysql 版本的服务
 # db.yaml
-
-version: '3.8'
 
 services:
   db5.7:
@@ -95,8 +89,6 @@ volumes:
 
 ```yaml
 # project_1.yaml
-version: '3.8'
-
 services:
   worker:
     build: ./worker
