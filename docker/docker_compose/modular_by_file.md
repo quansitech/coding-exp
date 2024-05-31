@@ -23,6 +23,30 @@
 │   │   └── project_3.yml
 ```
 
+##### .env
+```text
+用于设置环境变量
+```
+
+```shell
+# .env
+MYSQL_ROOT_PASSWORD=your_password
+```
+
+```yaml
+# *.yml
+
+services:
+  db5.7:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} // 使用环境变量
+    volumes:
+      - db_data5.6:/var/lib/mysql
+    networks:
+      - backend
+```
+
 ##### docker-compose.yml
 ```text
 存放通用配置
@@ -54,7 +78,6 @@ services:
       - db_data5.6:/var/lib/mysql
     networks:
     - backend
-       
       
   db8.0:
     image: mysql:8.0
@@ -64,6 +87,7 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - backend     
+      
   db8.4:
     image: mysql:8.4
     environment:
