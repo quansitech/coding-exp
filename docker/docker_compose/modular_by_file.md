@@ -131,3 +131,18 @@ docker-compose 可以使用多个文件组合配置执行，但是需要写出�
     docker-compose "$@"
   ```
   
+##### 查看配置
++ 查看全部配置
+  ```shell
+  # 将输出所有合并后的配置内容，效果类似于直接查看单个 docker-compose.yml 文件
+  
+  ./docker-compose.sh config
+  ```
+  
++ 查看部分配置
+  + 打开单个文件
+  + 使用 grep 过滤
+    ```shell
+    # 查看 nginx 服务的配置
+    ./docker-compose.sh config |grep nginx: -A 50
+    ```
