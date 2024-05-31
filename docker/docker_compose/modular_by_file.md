@@ -25,14 +25,16 @@
 
 ##### .env
 ```text
-用于设置环境变量
+此文件可以存储环境变量，例如数据库的密码等。
+
+docker-compose 默认会在当前目录中查找一个名为 .env 的文件，并将其中的变量加载到环境中
 ```
 
-```shell
+```text
 # .env
 MYSQL_ROOT_PASSWORD=your_password
 ```
-
+在 *.yml 文件中使用环境变量
 ```yaml
 # *.yml
 
