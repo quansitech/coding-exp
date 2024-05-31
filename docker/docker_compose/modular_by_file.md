@@ -38,7 +38,7 @@ networks:
 
 ##### 基础服务配置 (yml/common 目录)
 ```text
-当一个同类基础服务有多版本时，可以考虑从 docker-compose.yml 中拆分出来使用新文件存放
+存放基础服务
 ```
 
 ```yaml
