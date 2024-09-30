@@ -10,6 +10,7 @@
   + [从库部分同步但没有写入binlog导致出错](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_master_slave_replication/slave_sync_without_writing_to_binlog.md)
   + [数据一致性验证工具：pt-table-checksum的使用](https://github.com/quansitech/coding-exp/blob/main/mysql/mysql_master_slave_replication/using_pt_table_checksum.md)
 + [connection_control插件导致的数据库挂起](https://github.com/quansitech/coding-exp/blob/main/mysql/connection_control_hold_down/doc.md)
++ [mysql升级报错: Can't create thread to handle bootstrap (errno: 1)](https://github.com/quansitech/coding-exp/blob/main/mysql/upgrade_error/doc.md)
 
 ## SSL证书
 
