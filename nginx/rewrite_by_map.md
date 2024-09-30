@@ -10,7 +10,7 @@
 
 + 定义 map,添加 rewrite_map.conf
   ```nginx
-  	map $host $enable_domain {
+  map $host $enable_domain {
     	default 0;
     	~*YOUR_SOUR_DOMAIN 1; // 修改为需要匹配的域名
 	}
