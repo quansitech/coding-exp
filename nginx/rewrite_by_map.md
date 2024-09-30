@@ -12,7 +12,7 @@
   ```nginx
   map $host $enable_domain {
     	default 0;
-    	~*YOUR_SOUR_DOMAIN 1; // 修改为需要匹配的域名
+    	~*YOUR_SOURCE_DOMAIN 1; // 修改为需要匹配的域名
 	}
 
 	// 按需添加需要跳转的模块或者静态资源后缀
