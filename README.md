@@ -37,3 +37,6 @@
 # 开发规范
 
 + [开发规范](https://github.com/quansitech/coding-exp/blob/main/dev_standard/doc.md)
+
+# Nginx
++ [使用 Nginx 的 map 功能来进行 rewrite](./nginx/rewrite_by_map.md)
