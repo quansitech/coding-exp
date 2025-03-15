@@ -17,7 +17,7 @@ server_id=2   # 主从库id必须唯一
 relay_log=/var/lib/mysql/mysql-relay-bin  # relay_log存放路径
 log_bin_trust_function_creators=1  # 如果主库有自定义function，需要开启从库执行时才不会出错
 
-replication-do-db=db1,db2,db3 # 该项用于设置需要复制的指定数据库，如果不设置，则是整个库复制
+replicate_do_db=db1,db2,db3 # 该项用于设置需要复制的指定数据库，如果不设置，则是整个库复制
 ```
 
 在主库创建复制的专属用户
