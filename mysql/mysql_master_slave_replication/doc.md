@@ -79,6 +79,7 @@ source /绝对路径/test_db.sql;
 
 从库设置主库的同步配置
 ```sql
+#8.0版本
 stop slave #先停止从库复制
 
 CHANGE MASTER TO
@@ -88,17 +89,31 @@ MASTER_USER='repl',
 MASTER_PASSWORD='password',
 MASTER_LOG_FILE='mysql-bin.000016', #上面步骤记录的主库bin-log文件
 MASTER_LOG_POS=537; #上面步骤记录的主库bin-log文件位置
+
+# 8.4版本
+stop replica;
+
+CHANGE REPLICATION SOURCE TO
+SOURCE_HOST='master_ip_address',
+SOURCE_USER='replica_user',
+SOURCE_PASSWORD='password',
+SOURCE_LOG_FILE='mysql-bin.000001', -- 这里替换为第3步记录的值
+SOURCE_LOG_POS=1234; -- 这里替换为第3步记录的值
 ```
 
 开启从库同步
 ```sql
-start slave;
+start slave; //8.0
+
+start replica; //8.4
 ```
 
 
 查看同步情况
 ```sql
-show slave status\G;
+show slave status\G; //8.0
+
+SHOW REPLICA STATUS\G //8.4
 
 # 其中Slave_IO_Runing 和 Slave_SQL_Runing 都为Yes，表示同步进行中
 ```
