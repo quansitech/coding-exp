@@ -42,7 +42,9 @@ FLUSH TABLES WITH READ LOCK;
 
 记录当前主库的偏移量
 ```sql
-SHOW MASTER STATUS;
+SHOW MASTER STATUS; //8.0版本
+
+SHOW BINARY LOG STATUS; //8.4版本
 
 //记录 File 和 Position字段的值，表示当前bin-log的位置，从库需要从这个位置读取数据复制
 ```
