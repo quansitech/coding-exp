@@ -34,6 +34,7 @@
 + [离线安装软件包](https://github.com/quansitech/coding-exp/blob/main/linux/offline_install.md)
 + [rsync实现跨服务器文件同步](https://github.com/quansitech/coding-exp/blob/main/linux/rsync_remote.md)
 + [批量更新项目的数据库密码](https://github.com/quansitech/coding-exp/blob/main/linux/update_db_pwd.md)
++ [centos实现双因子登录(密码+google验证码)](https://github.com/quansitech/coding-exp/blob/main/linux/centos_two_fa.md)
 
 # 开发规范
 
