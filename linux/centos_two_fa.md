@@ -77,7 +77,7 @@ Do you want to enable rate-limiting? (y/n) y
     ```bash
     sudo vi /etc/ssh/sshd_config
     ```
-   确保以下参数设置为 yes：
+   确保以下参数设置为 yes:
 
 
     ```text
@@ -89,6 +89,7 @@ Do you want to enable rate-limiting? (y/n) y
     ```text
     PasswordAuthentication no
     ```
+    注释掉与AuthenticationMethods有关的设置
 
 2. 配置PAM模块
 

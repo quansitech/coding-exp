@@ -99,6 +99,11 @@ SOURCE_USER='replica_user',
 SOURCE_PASSWORD='password',
 SOURCE_LOG_FILE='mysql-bin.000001', -- 这里替换为第3步记录的值
 SOURCE_LOG_POS=1234; -- 这里替换为第3步记录的值
+
+-- 如果主库要求链接必须采用ssl方式，则需要配置一下参数（等保3要求必须ssl）
+CHANGE REPLICATION SOURCE TO
+SOURCE_SSL=1,SOURCE_SSL_CA='ca.pem', --从主库复制ca.pem到从库
+SOURCE_SSL_CAPATH='/var/lib/mysql/'
 ```
 
 开启从库同步
