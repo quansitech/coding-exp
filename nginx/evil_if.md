@@ -15,6 +15,7 @@ server {
     # ... 其他配置 ...
     set_real_ip_from 172.16.1.2; # 确保获取真实IP
     real_ip_header X-Real-IP;
+    real_ip_recursive on; # 如果有多层代理
 
     # 【第一道防线】 admin 目录的访问控制
     location ~* /admin/ { 
