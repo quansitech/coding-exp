@@ -89,7 +89,7 @@ location ~* ^/admin/ { # 使用 ^/admin/ 更严谨
     deny all;
 
     # 使用 try_files 替代 if
-    try_files $uri $uri/ /index.php/$uri;
+    try_files $uri $uri/ /index.php/$uri$is_args$args;
 }
 
 location ~ \.php(/|$) {
