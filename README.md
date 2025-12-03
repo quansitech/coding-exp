@@ -26,6 +26,7 @@
 
 ## docker
 
++ [Docker 容器网络故障与 getaddrinfo 崩溃排查复盘](./docker/alpine_linux_getaddrinfo_error.md)
 + [阿里云镜像构建使用dpkg安装报错处理方法](https://github.com/quansitech/coding-exp/blob/main/docker/dkp_exp.md)
 + [docker-compose 模块化](./docker/docker_compose/modular_by_file.md)
 
