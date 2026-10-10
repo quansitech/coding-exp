@@ -152,6 +152,16 @@ interval 偏小（如 10s 级）叠加全量阶段，会出现 checkpoint 开销
 
 ```yaml
   map:
+    # 高频更新的监控类 IMap 必须排除在持久化之外（精确名优先于 engine* 通配）
+    engine_runningJobMetrics:
+      map-store:
+        enabled: false
+    engine_finishedJobMetrics:
+      map-store:
+        enabled: false
+    engine_checkpoint_monitor:
+      map-store:
+        enabled: false
     engine*:
       map-store:
         enabled: true
@@ -166,6 +176,7 @@ interval 偏小（如 10s 级）叠加全量阶段，会出现 checkpoint 开销
 ```
 
 - `engine*` 通配所有任务台账 IMap；
+- **⚠️ 上面三个 metrics/monitor map 绝不能持久化**：file map-store 是 append-only WAL，metrics 每几秒全量重写一次，磁盘会无限膨胀（生产实测 11 天涨到 71G 写满磁盘，导致 checkpoint 失败、任务被引擎自动 cancel，见 [磁盘写满事故复盘](../incident_disk_full/doc.md)）；这些数据是临时监控数据，重启丢失无影响。精确名配置优先于 `engine*` 通配，因此显式关闭即可；
 - `initial-mode` 必须用 `LAZY`：官方示例里的 `EAGER` 会让 master 启动时抛 NPE、REST（8080）起不来（见"常见问题排查"）；
 - master 和所有 worker 都要配置，且都能访问对应目录；
 - 只接受人工 `-r` 续跑、不需要自动恢复时，可跳过本节，仅保留 1.4 的 checkpoint 存储。
