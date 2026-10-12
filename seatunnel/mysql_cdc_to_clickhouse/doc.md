@@ -15,6 +15,7 @@
 | 问题 | 本方案的选择 | 落实位置 |
 |------|--------------|----------|
 | 重启后任务怎么办？ | checkpoint 快照 + Hazelcast IMap 双持久化，落宿主机卷：既能人工 `-r` 续跑，也能自动恢复 | 步骤 1 |
+| 自动恢复一定可靠吗？ | 不一定。CDC 任务 `parallelism > 1` 时 master 切换可能恢复出"僵尸 job"（RUNNING 但不读数据）→ 流式任务固定 `parallelism = 1` + 重启后强制验证 | 步骤 4.3、6.2 |
 | 数据会重复吗？ | ClickHouse Sink 是 at-least-once；目标表统一 ReplacingMergeTree + 主键，查询侧用 `FINAL` 去重 | 步骤 4、7 |
 | 怎么续跑、怎么全量重刷？ | 标准配置为"新提交 = 全量重建"（`RECREATE_SCHEMA`）；运行中故障恢复一律用 `-r <jobId>`，不触发重建 | 步骤 4、7 |
 
@@ -448,7 +449,7 @@ AI 生成的配置只有 source / transform / sink，需要补上 `env` 块，�
 
 ```hocon
 env {
-  parallelism = 2
+  parallelism = 1                 # 流式 CDC 任务必须为 1，原因见下方"parallelism 为什么不能大于 1"
   job.mode = "STREAMING"
 
   # 任务级 checkpoint 参数，覆盖 seatunnel.yaml 的引擎默认值
@@ -465,6 +466,21 @@ source {
 ```
 
 > interval 取 15s（与生产任务一致）：好处是恢复重复窗口小，代价是 checkpoint 开销略高；全量数据量特别大、checkpoint 频繁超时或堆积时，可先把任务级 interval 放宽到 60000 降低压力。
+
+#### parallelism 为什么不能大于 1
+
+**MySQL-CDC 进入 binlog 流式阶段后，永远只有一个 reader 在读**（binlog 是单文件顺序流，无法并行）。`parallelism = 2` 的效果是：
+
+- 快照阶段：多一个 reader 并发拉表，略快一点（一次性收益）；
+- 流式阶段：第二个 reader 永久空闲，启动即收到 NoMoreSplits 并 FINISHED——**僵尸 job 的温床**。
+
+已验证的故障（2026-10 生产事故）：master 切换 / 集群重启恢复时，空闲 reader 的 FINISHED 状态与流式 reader 的 RUNNING 状态在 checkpoint 中不对称；引擎据此把**真正读 binlog 的 reader 误判为 FINISHED 不再调度**，enumerator 也认为没有 split 可发。结果 job 状态显示 RUNNING，实际零 task、零数据、无 checkpoint 推进，挂 2 天无人发现，靠用户报数据差异才暴露。
+
+> ⚠️ 不要照抄官方 `v2.streaming.conf.template` 里的 `parallelism = 2`——那是 FakeSource 演示配置，不是 CDC 场景建议值。
+>
+> 快照阶段想加速，正确做法是调 source 侧的切片参数（如 `snapshot.split.size` 调大减少切片数、`snapshot.fetch.size` 调大增加每批拉取行数），而不是加 reader 并行度。
+
+另外可在 source 中显式开启 `exactly_once = true`（MySQL-CDC source 参数，默认 false）：消除"快照/增量衔接处"的重复。注意它不改变 ClickHouse sink 的 at-least-once 语义（恢复重放的重复窗口仍在），RMT + FINAL 的兜底设计不变。
 
 `startup.mode` 决定**新提交一个 job 时的数据起点**，是"全量重刷 / 恢复"语义的源头：
 
@@ -618,11 +634,36 @@ curl -s -u admin:<password> 'http://localhost:8080/jobs/checkpoints/history/<job
 
 > 插件仓库的 `scripts/` 目录提供了两个运维脚本，封装上述接口并格式化输出：`show_jobs.sh`（任务状态 + 每表读写积压，一眼定位卡住的表）、`show_checkpoints.sh`（checkpoint 计数、耗时与间隔统计），日常排查推荐直接使用。
 
-**注意：checkpoint 全绿 ≠ 数据在流动。** 判断同步是否正常要同时看：
+**注意：checkpoint 全绿 ≠ 数据在流动；RUNNING ≠ 任务真的在跑。** 判断同步是否正常要同时看：
 
 - `SourceReceivedCount` / `SinkWriteCount` 是否在涨（`/job-info/<jobId>` 的 metrics）；
+- checkpoint 编号是否持续 +1（`/jobs/checkpoints/<jobId>`）；
 - `IntermediateQueueSize` 是否持续满且不下降（低峰期源端静默后仍不排空 = 卡住）；
 - 必要时查 Sink 线程栈和 ClickHouse 侧状态（负载、写入报错）。
+
+#### 僵尸 job 识别（集群重启后必查）
+
+master 切换 / 集群重启自动恢复后，可能出现**僵尸 job**：状态 RUNNING，但 metrics 全 0、表级指标为空、checkpoint 不推进、worker 日志无该 jobId 的任何输出——实际零 task 在跑（根因见 4.3 "parallelism 为什么不能大于 1"）。
+
+快速判定（v2 REST）：
+
+```bash
+# RUNNING 但 SourceReceivedCount 为 "0"（或长时间不涨）→ 僵尸
+curl -s -u admin:<password> http://localhost:8080/running-jobs | \
+  python3 -c "import json,sys; [print('ZOMBIE:', j['jobId'], j['jobName']) for j in json.load(sys.stdin) if j['metrics'].get('SourceReceivedCount')=='0']"
+```
+
+处理：**不要 `-r` 续跑**（损坏的引擎状态会被再次恢复）。直接 stop 后重新提交新 job（标准配置 `RECREATE_SCHEMA` 会重建表做全量，顺带清掉历史重复行）：
+
+```bash
+curl -s -u admin:<password> -X POST http://localhost:8080/stop-job \
+  -H 'Content-Type: application/json' -d '{"jobId": "<jobId>", "isStopWithSavePoint": false}'
+
+docker exec -d seatunnel-client \
+  ./bin/seatunnel.sh --async -c ./config/mysql_to_clickhouse_xxx.conf -m cluster
+```
+
+建议把上面的僵尸检测脚本挂 cron 每 5 分钟跑一次并告警——这次事故假死 2 天才被发现，缺的就是这个监控。
 
 ### 6.3 验证 ClickHouse 表结构与去重
 
@@ -691,6 +732,7 @@ docker exec -d seatunnel-client \
 - 续跑必须使用**同一份任务配置**；
 - 没配 map-store：集群/服务器重启后按上面人工恢复；
 - 配了 map-store（步骤 1.5）：master 启动会自动从 IMap 拉起任务并从最近 checkpoint 续跑，无需人工；
+- **每次集群重启 / 自动恢复后，必须逐 job 验证"真的在跑"**（metrics 非 0、checkpoint 在推进，见步骤 6.2 僵尸 job 识别）；自动恢复把任务拉成 RUNNING 不代表有 task 在工作；
 - SeaTunnel 2.3.13 **没有内置的任务失败自动重试**：checkpoint 出错会把 pipeline 置为 CANCELING，任务最终 FAILED，需要人工恢复；
 - 只重启了某个 worker（master 存活）：该节点上的任务 FAILED，同样人工恢复。
 
@@ -762,6 +804,7 @@ docker exec -d seatunnel-client \
 | 现象 | 原因 / 处理 |
 |------|-------------|
 | 集群重启后任务消失 | 没配 map-store → 人工 `-r` 续跑或重新提交 |
+| 集群重启后 job RUNNING 但 metrics 全 0、无 checkpoint、CH 数据停更 | 僵尸 job：CDC 任务 `parallelism > 1` 时空闲 reader 状态干扰恢复，流式 reader 被误判 FINISHED 不再调度 → stop 后重新提交（见 6.2）；根治 = env 改 `parallelism = 1`（见 4.3） |
 | 自动恢复 / `-r` 后从全量重新开始 | checkpoint 文件丢失/不可访问（容器重建、路径未挂载、换了存储）→ 静默降级，检查 1.3 / 1.4 |
 | ClickHouse 中数据重复 | at-least-once 的正常现象 → 查询带 `FINAL`；确认表是 RMT；必要时 `OPTIMIZE TABLE ... FINAL` |
 | 重复行一直不收敛 | 表不是 RMT（历史遗留 MergeTree），或查询没带 `FINAL` |
